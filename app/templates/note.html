@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block breadcrumb %}ЧТЕНИЕ / {{ title }}{% endblock %}
+
+{% block content %}
+<div class="mega-card" style="margin-bottom: 50px;">
+    <div class="mega-card-header">
+        <h2>{{ title }}</h2>
+    </div>
+    
+    <div id="view-mode" style="display: {{ 'none' if not note else 'block' }};">
+        <div class="note-view">{{ content_html|safe }}</div>
+        
+        <div style="margin-top: 25px; display: flex; gap: 15px;">
+            <button onclick="toggleEdit()" class="cyber-btn">РЕДАКТИРОВАТЬ</button>
+        </div>
+    </div>
+
+    <div id="edit-mode" style="display: {{ 'block' if not note else 'none' }};">
+        <form method="POST">
+            <textarea name="content" class="note-editor" placeholder="Ввод данных... Используйте [[Имя Заметки]] для создания связи.">{{ note.content if note else '' }}</textarea>
+            
+            <div style="margin-top: 25px; display: flex; gap: 15px;">
+                <button type="submit" class="cyber-btn" style="background: var(--cyan); color: var(--deep-bg);">СОХРАНИТЬ</button>
+                {% if note %}
+                <button type="button" onclick="toggleEdit()" class="back-link">ОТМЕНА</button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,224 @@
+/* =========================================
+   СЕТКИ
+   ========================================= */
+/* Увеличиваем размер карточек (было 220px, стало 280px) */
+.content-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+    gap: 15px; 
+    margin-bottom: 40px; 
+}
+
+/* Сдвигаем все кнопки управления ВЛЕВО */
+.card-controls {
+    display: flex;
+    justify-content: flex-start; /* Теперь всегда слева */
+    align-items: center;
+    margin-top: 15px;
+    min-height: 26px; 
+}
+
+/* Перестраиваем шапку заметки для отображения даты */
+.note-card-header { 
+    display: flex; 
+    flex-direction: column; /* Дата будет строго под названием */
+    align-items: flex-start; 
+    gap: 5px; 
+}
+
+/* Стиль для даты создания */
+.note-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Стиль для родительской связи (NAS / ) */
+.parent-title {
+    color: var(--text-muted);
+    font-weight: normal;
+    font-size: 0.9rem;
+}
+
+.tasks-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
+    gap: 15px; 
+}
+
+/* =========================================
+   БАЗОВАЯ КАРТОЧКА
+   ========================================= */
+.item-card {
+    text-decoration: none; 
+    color: inherit; 
+    background: var(--bg-surface);
+    border-radius: var(--radius); 
+    border: 1px solid var(--border-color); 
+    
+    /* Обязательно добавляем transform и box-shadow в transition, чтобы подъем был плавным */
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.item-card:hover { 
+    border-color: #555; 
+    background: #2a2a2a; /* Я вернул классический темный цвет вместо красного #d30b0b */
+    
+    /* Эффект левитации: карточка поднимается на 5px вверх */
+    transform: translateY(-5px);
+    
+    /* Добавляем мягкую тень под карточкой, чтобы подчеркнуть высоту */
+    box-shadow: 0 10px 20px rgb(0, 0, 0);
+}
+
+.card-inner { 
+    padding: 20px; 
+}
+
+.item-card h3 { 
+    margin: 0; 
+    font-size: 1rem; 
+    font-weight: 500; 
+    color: var(--text-normal);
+}
+
+.empty-msg { 
+    text-align: center; 
+    padding: 60px 0; 
+    color: var(--text-muted); 
+    letter-spacing: 2px; 
+    font-size: 0.9rem; 
+}
+
+/* =========================================
+   УПРАВЛЕНИЕ КАРТОЧКАМИ (НИЖНЯЯ ПАНЕЛЬ)
+   ========================================= */
+.card-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    min-height: 26px; /* Фиксируем высоту, чтобы карточка не "прыгала" при появлении кнопок */
+}
+
+.controls-right {
+    justify-content: flex-end; /* Сдвигаем кнопки вправо, если слева нет текста */
+}
+
+.action-group {
+    display: flex;
+    gap: 8px;
+    opacity: 0; /* Скрываем все кнопки по умолчанию */
+    transition: opacity 0.2s ease;
+}
+
+.item-card:hover .action-group {
+    opacity: 1; /* Показываем панель управления при наведении */
+}
+
+/* =========================================
+   ЗАДАЧИ И ТЕКСТ
+   ========================================= */
+.task-card { 
+    position: relative; 
+}
+
+.task-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-start; 
+}
+
+.task-text { 
+    margin: 10px 0 0 0; 
+    font-size: 0.9rem; 
+    color: var(--text-muted); 
+    white-space: pre-wrap; 
+}
+
+.due-indicator {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* =========================================
+   КНОПКИ ДЕЙСТВИЙ
+   ========================================= */
+.task-complete-btn, .archive-btn {
+    background: transparent; 
+    border: 1px solid var(--border-color); 
+    color: var(--text-muted);
+    border-radius: 4px; 
+    width: 26px; 
+    height: 26px; 
+    padding: 0; 
+    cursor: pointer;
+    font-size: 0.85rem; 
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.task-complete-btn:hover { 
+    border-color: #10b981; 
+    color: #10b981; 
+    background: rgba(16, 185, 129, 0.1); 
+}
+
+.archive-btn:hover {
+    color: #ef4444; 
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.pin-btn {
+    background: transparent; 
+    border: 1px solid transparent; 
+    color: var(--text-muted);
+    font-family: inherit; 
+    font-size: 0.65rem; 
+    font-weight: 500; 
+    letter-spacing: 1px;
+    cursor: pointer; 
+    padding: 4px 8px; 
+    border-radius: 4px; 
+    transition: all 0.2s ease;
+}
+
+.pin-btn:hover { 
+    background: var(--bg-nested); 
+    color: var(--text-normal); 
+    border-color: var(--text-normal); 
+}
+
+/* =========================================
+   СПЕЦИФИКА ЗАКРЕПЛЕННЫХ ЗАМЕТОК
+   ========================================= */
+.note-card-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-start; 
+}
+
+.note-card.pinned { 
+    border-color: var(--accent); 
+    background: var(--bg-surface); 
+}
+
+.note-card.pinned .pin-btn { 
+    color: white; 
+    border-color: rgba(0, 145, 96, 0.2); 
+}
+
+.note-card.pinned:hover .pin-btn { 
+    border-color: var(--accent); 
+}
+@media (max-width: 900px) {
+    .content-grid { 
+        grid-template-columns: 1fr; 
+        gap: 10px; 
+    }
+}
+
+

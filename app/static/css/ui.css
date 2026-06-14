@@ -1,0 +1,70 @@
+/* =========================================
+   КНОПКИ И ПОЛЯ ВВОДА
+   ========================================= */
+.back-link, 
+.cyber-btn {
+    color: var(--text-normal); 
+    text-decoration: none; 
+    font-weight: 500;
+    padding: 6px 14px; 
+    border-radius: var(--radius); 
+    border: 1px solid var(--border-color); 
+    background: var(--bg-surface); 
+    cursor: pointer; 
+    transition: background 0.15s ease, border-color 0.15s ease;
+    font-size: 0.85rem;
+}
+
+.back-link:hover, 
+.cyber-btn:hover {
+    background: #2e2e2e; 
+    border-color: #444444; 
+    color: #fff;
+}
+
+.task-btn { 
+    border-color: var(--accent); 
+    color: var(--accent); 
+}
+
+.task-btn:hover { 
+    background: var(--accent); 
+    color: #fff; 
+}
+
+.cyber-input {
+    width: 100%; 
+    padding: 8px 14px; 
+    border-radius: var(--radius); 
+    background: var(--bg-nested); 
+    border: 1px solid var(--border-color); 
+    color: var(--text-normal); 
+    font-size: 0.9rem; 
+    outline: none; 
+    transition: border-color 0.15s ease; 
+    box-sizing: border-box;
+}
+
+.cyber-input:focus { 
+    border-color: var(--accent); 
+}
+
+.note-section .cyber-input { 
+    width: 100%; 
+}
+
+/* =========================================
+   МЕТКИ
+   ========================================= */
+.tech-tags { 
+    display: flex; 
+    margin-top: 10px; 
+}
+
+.tech-badge {
+    font-size: 0.7rem; 
+    color: var(--text-muted); 
+    background: transparent; 
+    border: none; 
+    padding: 0;
+}

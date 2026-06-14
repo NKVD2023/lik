@@ -1,0 +1,37 @@
+/* Поле ввода */
+textarea {
+    width: 100%;
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border-main);
+    padding: 15px;
+    font-family: inherit;
+    box-sizing: border-box;
+    resize: vertical;
+    outline: none;
+}
+
+textarea:focus {
+    border-color: var(--accent-color);
+}
+
+/* Блок просмотра контента */
+.note-content {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-main);
+    padding: 20px;
+    min-height: 300px;
+    margin-bottom: 20px;
+}
+
+/* Внутренние ссылки */
+.internal-link {
+    color: var(--accent-color);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--accent-color);
+    font-weight: 500;
+}
+
+.internal-link:hover {
+    border-bottom-style: solid;
+}

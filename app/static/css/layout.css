@@ -1,0 +1,153 @@
+/* =========================================
+   ШАПКА И НАВИГАЦИЯ
+   ========================================= */
+header {
+    background: var(--bg-main); 
+    padding: 15px 0; 
+    border-bottom: 1px solid var(--border-color);
+}
+
+.header-flex { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+}
+
+.logo { 
+    font-size: 0.9rem; 
+    font-weight: 600; 
+    letter-spacing: 1px; 
+    text-transform: uppercase; 
+}
+
+.logo span { 
+    color: var(--text-muted); 
+}
+
+.system-tag { 
+    font-size: 0.8rem; 
+    color: var(--text-muted); 
+}
+
+.breadcrumb {
+    margin: 25px 0; 
+    padding: 10px 0; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    border-bottom: 1px solid var(--border-color);
+}
+
+.path-info { 
+    font-size: 0.95rem; 
+    color: var(--text-muted); 
+}
+
+.root-label { 
+    color: var(--text-normal); 
+    font-weight: 600; 
+    margin-right: 5px; 
+}
+
+/* =========================================
+   СЕКЦИИ И ПАНЕЛИ ИНСТРУМЕНТОВ
+   ========================================= */
+.content-section { 
+    margin-bottom: 20px; 
+}
+
+.section-heading {
+    font-size: 0.85rem; 
+    font-weight: 600; 
+    letter-spacing: 1.5px;
+    color: var(--text-muted); 
+    margin-bottom: 15px;
+    /* border-left: 2px solid var(--accent);  */
+    padding-left: 10px;
+    text-transform: uppercase;
+}
+
+.toolbar-v2 { 
+    display: flex; 
+    gap: 15px; 
+    margin-bottom: 40px; 
+    align-items: center; 
+}
+
+.toolbar-section { 
+    display: flex; 
+    gap: 10px; 
+}
+
+.search-section, 
+.note-section { 
+    flex: 1; 
+}
+
+/* =========================================
+   МЕНЮ СЕКЦИЙ (Сортировка и фильтры)
+   ========================================= */
+.section-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color); /* Легкая линия для отделения меню от карточек */
+    padding-bottom: 10px;
+}
+
+.section-menu {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.sort-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+    margin-bottom: 20px;
+}
+
+.sort-btn:hover {
+    border-color: var(--text-normal);
+    color: var(--text-normal);
+}
+
+.sort-btn.active {
+    background: var(--bg-nested);
+    border-color: var(--accent);
+    color: var(--accent); /* Фирменный цвет для активной сортировки */
+}
+
+
+
+/* Адаптация */
+@media (max-width: 768px) {
+    .container { 
+        padding: 0 15px; 
+    }
+    .header-flex { 
+        flex-direction: row; 
+        justify-content: space-between; 
+    }
+    .breadcrumb { 
+        margin: 15px 0; 
+    }
+    .toolbar-v2 { 
+        flex-direction: column; 
+        align-items: stretch; 
+    }
+    .search-section, 
+    .note-section, 
+    .toolbar-section { 
+        width: 100%; 
+    }
+}

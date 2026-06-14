@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Архив{% endblock %}
+{% block breadcrumb %}АРХИВ СИСТЕМЫ{% endblock %}
+
+{% block content %}
+<div class="toolbar-v2" style="margin-bottom: 20px;">
+    <a href="{{ url_for('main.index') }}" class="cyber-btn" style="border-color: var(--accent); color: var(--accent);">←
+        ВЕРНУТЬСЯ НА ГЛАВНУЮ</a>
+</div>
+
+<div class="content-section">
+    <div class="section-heading">УДАЛЕННЫЕ ЗАДАЧИ</div>
+    <div class="tasks-grid">
+        {% for task in tasks %}
+        <div class="item-card task-card" style="opacity: 0.7;">
+            <div class="card-inner">
+                <div class="task-header">
+                    <h3 class="note-title" style="text-decoration: line-through;">{{ task.title }}</h3>
+                </div>
+                <p class="task-text">{{ task.content }}</p>
+                <div class="card-controls controls-right">
+                    <div class="action-group">
+                        <form action="{{ url_for('main.toggle_archive_task', task_id=task.id) }}" method="POST"
+                            style="margin:0;">
+                            <button type="submit" class="archive-btn" title="Восстановить">↺</button>
+                        </form>
+                        <form action="{{ url_for('main.delete_task', task_id=task.id) }}" method="POST"
+                            style="margin:0;"
+                            onsubmit="return confirm('Удалить задачу НАВСЕГДА? Это действие нельзя отменить.');">
+                            <button type="submit" class="archive-btn"
+                                style="color: #ef4444; border-color: rgba(239, 68, 68, 0.3);"
+                                title="Удалить навсегда">🗑</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-msg" style="grid-column: 1 / -1; padding: 10px 0;">АРХИВ ЗАДАЧ ПУСТ</div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="content-section" style="margin-top: 40px;">
+    <div class="section-heading">УДАЛЕННЫЕ ЗАМЕТКИ</div>
+    <div class="content-grid">
+        {% for note in notes %}
+        <div class="item-card note-card" style="opacity: 0.7;" data-title="{{ note.title }}">
+            <div class="card-inner">
+                <div class="note-card-header">
+                    <h3 class="note-title">{{ note.title }}</h3>
+                </div>
+                <div class="action-group">
+                    <form action="{{ url_for('main.toggle_archive_task', task_id=task.id) }}" method="POST"
+                        style="margin:0;">
+                        <button type="submit" class="archive-btn" title="Восстановить">↺</button>
+                    </form>
+                    <form action="{{ url_for('main.delete_task', task_id=task.id) }}" method="POST" style="margin:0;"
+                        onsubmit="return confirm('Удалить задачу НАВСЕГДА? Это действие нельзя отменить.');">
+                        <button type="submit" class="archive-btn"
+                            style="color: #ef4444; border-color: rgba(239, 68, 68, 0.3);"
+                            title="Удалить навсегда">🗑</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-msg" style="grid-column: 1 / -1; padding: 10px 0;">АРХИВ ЗАМЕТОК ПУСТ</div>
+        {% endfor %}
+    </div>
+</div>
+<div id="note-modal-overlay" class="modal-overlay">
+    <div class="modal-card" id="note-modal-card">
+        <div class="modal-header">
+            <h2 id="modal-title"></h2>
+            <button class="close-btn" onclick="closeModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="note-view" id="modal-content-html" style="min-height: 30vh;"></div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

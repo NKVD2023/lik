@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block title %}Рабочее пространство{% endblock %}
+{% block breadcrumb %}{% endblock %}
+
+{% block content %}
+<div class="toolbar-v2">
+    <div class="toolbar-section search-section">
+        <input type="text" id="live-search" class="cyber-input" placeholder="Мгновенный поиск по базе..."
+            autocomplete="off">
+    </div>
+
+    <form action="{{ url_for('main.create_note') }}" method="POST" class="toolbar-section note-section">
+        <input type="text" name="title" class="cyber-input" placeholder="Новая заметка..." required autocomplete="off">
+        <button type="submit" class="cyber-btn">ДОБАВИТЬ</button>
+    </form>
+
+    <div class="toolbar-section">
+        <button type="button" class="cyber-btn task-btn" onclick="openTaskModal()">+ ЗАДАЧА</button>
+        <a href="{{ url_for('main.archive') }}" class="cyber-btn"
+            style="border-color: var(--text-muted); color: var(--text-muted);">АРХИВ</a>
+    </div>
+</div>
+
+<div class="content-section">
+    <div class="section-heading">ТЕКУЩИЕ ЗАДАЧИ</div>
+    <div class="tasks-grid">
+        {% for task in tasks %}
+        <div class="item-card task-card search-item" data-due="{{ task.due_date.isoformat() }}">
+            <div class="card-inner">
+                <div class="task-header">
+                    <h3 class="note-title">{{ task.title }}</h3>
+                </div>
+                <p class="task-text">{{ task.content }}</p>
+
+                {% set active_subtasks = task.subtasks|selectattr("is_completed", "equalto", false)|selectattr("is_archived", "equalto", false)|list %}
+                {% if active_subtasks %}
+                <div class="subtasks-list" style="margin-top: 15px; display: flex; flex-direction: column; gap: 6px;">
+                    {% for subtask in active_subtasks %}
+                    <div class="subtask-item" style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-nested); padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-color);">
+                        <span style="font-size: 0.85rem; color: var(--text-normal);">{{ subtask.title }}</span>
+                        
+                        <form action="{{ url_for('main.complete_task', task_id=subtask.id) }}" method="POST" style="margin:0;">
+                            <button type="submit" class="task-complete-btn" style="width: 22px; height: 22px; font-size: 0.7rem;" title="Завершить подзадачу">✓</button>
+                        </form>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <div class="card-controls">
+                    <span class="due-indicator">Срок: {{ task.due_date.strftime('%d.%m.%Y %H:%M') }}</span>
+                    <div class="action-group">
+                        <form action="{{ url_for('main.complete_task', task_id=task.id) }}" method="POST"
+                            style="margin:0;">
+                            <button type="submit" class="task-complete-btn" title="Выполнено">✓</button>
+                        </form>
+                        <form action="{{ url_for('main.toggle_archive_task', task_id=task.id) }}" method="POST"
+                            style="margin:0;">
+                            <button type="submit" class="archive-btn" title="В архив">✕</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-msg" style="grid-column: 1 / -1; padding: 30px 0;">АКТИВНЫХ ЗАДАЧ НЕТ</div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="content-section" style="margin-top: 40px;">
+    <div class="section-heading">ЛИЧНЫЕ ЗАМЕТКИ</div>
+    <div class="section-menu">
+        <button id="btn-sort-date" class="sort-btn active" onclick="sortNotes('date')">ПО ДАТЕ</button>
+        <button id="btn-sort-structure" class="sort-btn" onclick="sortNotes('structure')">ПО СТРУКТУРЕ</button>
+        <button id="btn-sync-system" class="sort-btn"
+            onclick="triggerSystemSync()">СИНХРОНИЗАЦИЯ БД</button>
+    </div>
+    <div class="content-grid" id="notes-grid">
+        {% for note in notes %}
+        <div class="item-card search-item note-card {% if note.is_pinned %}pinned{% endif %}"
+            data-title="{{ note.title }}" data-parent="{{ note.parent_title or '' }}"
+            data-date="{{ note.created_at.timestamp() }}" data-pinned="{{ '1' if note.is_pinned else '0' }}">
+            <div class="card-inner">
+                <div class="note-card-header">
+                    <h3 class="note-title">
+                        {% if note.parent_title %}
+                        <span class="parent-title">{{ note.parent_title }} / </span>
+                        {% endif %}
+                        {{ note.title }}
+                    </h3>
+                    <div class="note-date">Создано: {{ note.created_at.strftime('%d.%m.%Y %H:%M') }}</div>
+                </div>
+
+                <div class="card-controls">
+                    <div class="action-group">
+                        <form action="{{ url_for('main.toggle_pin', title=note.title) }}" method="POST"
+                            style="margin:0;">
+                            <button type="submit" class="pin-btn">{{ 'ОТКРЕПИТЬ' if note.is_pinned else 'ЗАКРЕПИТЬ'
+                                }}</button>
+                        </form>
+                        <form action="{{ url_for('main.toggle_archive_note', title=note.title) }}" method="POST"
+                            style="margin:0;">
+                            <button type="submit" class="archive-btn" title="В архив">✕</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="note-modal-overlay" class="modal-overlay">
+    <div class="modal-card" id="note-modal-card">
+        <div class="modal-header">
+            <h2 id="modal-title"></h2>
+            <button class="close-btn" onclick="closeModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="note-view" id="modal-content-html" style="min-height: 30vh;"></div>
+            <div style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                <a href="#" id="modal-edit-link" class="cyber-btn">РЕДАКТИРОВАТЬ</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="task-modal-overlay" class="modal-overlay">
+    <div class="modal-card" style="max-width: 500px;">
+        <div class="modal-header">
+            <h2>Новая задача</h2>
+            <button type="button" class="close-btn" onclick="closeTaskModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <form action="{{ url_for('main.create_task') }}" method="POST"
+                style="display: flex; flex-direction: column; gap: 15px;">
+                <input type="text" name="title" class="cyber-input" placeholder="Название задачи..." required
+                    autocomplete="off">
+                <textarea name="content" class="cyber-input" rows="3" placeholder="Описание (необязательно)..."
+                    style="resize: vertical; font-family: inherit;"></textarea>
+
+                <div id="subtasks-container" style="display: flex; flex-direction: column; gap: 8px;">
+                    </div>
+                <button type="button" class="cyber-btn" onclick="addSubtaskInput()" 
+                        style="align-self: flex-start; font-size: 0.75rem; border-style: dashed; padding: 4px 10px; border-color: var(--text-muted); color: var(--text-muted); background: transparent;">
+                    + ДОБАВИТЬ ПОДЗАДАЧУ
+                </button>
+
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label style="font-size: 0.85rem; color: var(--text-muted);">Срок выполнения:</label>
+                    <input type="datetime-local" name="due_date" class="cyber-input" required>
+                </div>
+
+                <button type="submit" class="cyber-btn" style="margin-top: 10px;">СОХРАНИТЬ ЗАДАЧУ</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/sort.js') }}"></script>
+<script src="{{ url_for('static', filename='js/sync.js') }}"></script>
+{% endblock %}
